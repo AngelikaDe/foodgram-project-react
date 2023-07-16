@@ -1,11 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 class Tag(models.Model):
     name = models.CharField(max_length=255, unique=True)
     color = models.CharField(max_length=7)  # HEX code, e.g. #49B64E
     slug = models.SlugField(unique=True)
-
+    
+    class Meta:
+        ordering = ('name',)
     def __str__(self):
         return self.name
 
@@ -17,13 +19,19 @@ class Ingredient(models.Model):
         return self.name
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='recipe_images')
-    description = models.TextField()
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='recipes/')
+    description = models.TextField(blank=True)
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
     tags = models.ManyToManyField(Tag)
     cooking_time = models.PositiveIntegerField()
+    is_favorited = models.BooleanField(default=False)
+    is_in_shopping_cart = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-id']
 
     def __str__(self):
         return self.title

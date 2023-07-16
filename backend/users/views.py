@@ -1,11 +1,23 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.request import Request
+from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser
+from rest_framework.decorators import action
+from rest_framework import status
+from .pagination import CustomUserPagination
 
-def user_profile(request, username):
-    user = CustomUser.objects.get(username=username)
-    # other logic for handling subscription, favorite, shopping list, etc.
+from api.serializers import CustomUserSerializer
 
-    context = {'user': user}
-    return render(request, 'users/user_profile.html', context)
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    pagination_class = CustomUserPagination
 
-# other views for subscriptions, favorite, shopping list, etc.
+    @action(detail=False, methods=['get'], url_path='me')
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        if request.user.is_authenticated:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Учетные данные не были предоставлены.'}, status=status.HTTP_401_UNAUTHORIZED)
