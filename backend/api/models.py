@@ -22,11 +22,11 @@ class Recipe(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='recipes/')
-    description = models.TextField(blank=True)
+    text = models.TextField(blank=True)
     ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
     tags = models.ManyToManyField(Tag)
     cooking_time = models.PositiveIntegerField()
-    is_favorited = models.BooleanField(default=False)
+    is_favorited = models.ManyToManyField(CustomUser, related_name='favorite_recipes')
     is_in_shopping_cart = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -44,3 +44,10 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return f'{self.quantity} {self.unit} of {self.ingredient} in {self.recipe}'
+    
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, default=None)
+
+    def __str__(self):
+        return f'{self.user}, {self.recipe}'
