@@ -20,9 +20,7 @@ class CustomUser(AbstractUser):
     )
     follow = models.ManyToManyField(
         'self',
-        verbose_name='Подписка',
         related_name='followers',
-        # to='self',
         symmetrical=False,
     )
     is_subscribed = models.BooleanField(default=False)
@@ -32,8 +30,6 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
         ordering = ('username',)
 
     def __str__(self):
@@ -42,23 +38,17 @@ class CustomUser(AbstractUser):
 class Follow(models.Model):
     user = models.ForeignKey(
         CustomUser,
-        verbose_name='Подписчик',
         on_delete=models.CASCADE,
         related_name='follower',
-        help_text='Подписчик',
     )
     author = models.ForeignKey(
         CustomUser,
-        verbose_name='Автор',
         on_delete=models.CASCADE,
         related_name='author',
-        help_text='Автор',
     )
 
     class Meta:
         ordering = ('id',)
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'author',),
@@ -66,10 +56,3 @@ class Follow(models.Model):
             ),
         ]
 
-# class FavoriteRecipe(models.Model):
-#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-
-# class ShoppingList(models.Model):
-#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
