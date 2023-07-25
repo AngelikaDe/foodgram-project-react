@@ -68,7 +68,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             IsAuthenticated], url_path='download_shopping_cart')
     def download(self, request):
         shopping_cart = ShoppingCart.objects.filter(user=request.user)
-        file_content = "Your shopping cart content:\n"
+        file_content = 'Your shopping cart content:\n'
 
         for item in shopping_cart:
             recipe = item.recipe
@@ -80,11 +80,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 amount = ingredient.amount
                 ingredient_name = ingredient.ingredient.name
                 measurement_unit = ingredient.ingredient.measurement_unit
-                file_content += f"{amount} {measurement_unit} {ingredient_name}\n"
+                file_content += (
+                    f"{amount} {measurement_unit} {ingredient_name}\n")
             file_content += "\n"
 
         response = Response(file_content, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="shopping_cart.txt"'
+        response['Content-Disposition'] = ('attachment; '
+                                           'filename="shopping_cart.txt"')
         return response
 
     @action(detail=True, permission_classes=[IsAuthenticated],
