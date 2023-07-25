@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import re
 from .models import (
     Recipe,
     Tag,
@@ -161,9 +162,6 @@ class FollowSerializer(UserSerializer):
         model = Follow
         fields = '__all__',
         read_only_fields = '__all__',
-
-    def get_recipes_count(self, author):
-        return author.recipes.count()
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
