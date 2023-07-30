@@ -43,7 +43,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     def subscriptions(self, request):
         subscriptions = request.user.follower.all()
         page = self.paginate_queryset(subscriptions)
-        serializer = CustomUserSerializer(page, many=True, context={'request': request})
+        serializer = CustomUserSerializer(page,
+                                          many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)
 
     @action(detail=True,
@@ -56,13 +57,18 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         current_user = request.user
         user_to_manage = self.get_object()
         if current_user == user_to_manage:
-            return Response({"detail": "You cannot subscribe to yourself."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'You cannot subscribe'
+                             'to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
         if request.method == 'POST':
-            follow, created = Follow.objects.get_or_create(user=user_to_manage, author=current_user)
+            follow, created = Follow.objects.get_or_create(user=user_to_manage,
+                                                           author=current_user)
             if created:
-                return Response({"detail": "Successfully subscribed to the user."}, status=status.HTTP_201_CREATED)
-            return Response({"detail": "You are already subscribed to this user."}, status=status.HTTP_200_OK)
+                return Response({'detail': 'Successfully subscribed'
+                                 'to the user.'}, status=status.HTTP_201_CREATED)
+            return Response({'detail': 'You are already subscribed'
+                             'to this user.'}, status=status.HTTP_200_OK)
 
-        follow = get_object_or_404(Follow, user=user_to_manage, author=current_user)
+        follow = get_object_or_404(Follow, user=user_to_manage,
+                                   author=current_user)
         follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -39,7 +39,8 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/', verbose_name='Изображение')
     text = models.TextField(blank=True, verbose_name='Описание')
     ingredients = models.ManyToManyField(Ingredient,
-                                         through='RecipeIngredient', verbose_name='Ингредиенты')
+                                         through='RecipeIngredient',
+                                         verbose_name='Ингредиенты')
     tags = models.ManyToManyField(Tag, verbose_name='Теги')
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления')
@@ -57,9 +58,11 @@ class Recipe(models.Model):
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
-                               verbose_name='Рецепт', related_name='recipe_ingredients')
+                               verbose_name='Рецепт',
+                               related_name='recipe_ingredients')
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
-                                   verbose_name='Ингредиент', related_name='recipe_ingredients')
+                                   verbose_name='Ингредиент',
+                                   related_name='recipe_ingredients')
     amount = models.PositiveSmallIntegerField(verbose_name='Количество')
 
     class Meta:
@@ -74,7 +77,8 @@ class RecipeIngredient(models.Model):
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
-                             verbose_name='Пользователь', related_name='shopping_cart')
+                             verbose_name='Пользователь',
+                             related_name='shopping_cart')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                default=None, verbose_name='Рецепт')
 
@@ -87,8 +91,9 @@ class ShoppingCart(models.Model):
 
 
 class FavoriteRecipe(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, 
-                             verbose_name='Пользователь', related_name='favorite_recipes')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                             verbose_name='Пользователь',
+                             related_name='favorite_recipes')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='Рецепт')
 
