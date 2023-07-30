@@ -11,7 +11,6 @@ from .models import (
     ShoppingCart,
     Ingredient,
     FavoriteRecipe,
-    RecipeIngredient,
 )
 
 from .permissions import OnlyAuthorOrStaff

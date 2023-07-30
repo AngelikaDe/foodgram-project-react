@@ -1,11 +1,10 @@
 import csv
 import os
 import django
+from api.models import Ingredient
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'foodgram.settings')
 django.setup()
-
-from api.models import Ingredient
 
 
 def import_data_from_csv(csv_file):

@@ -1,5 +1,4 @@
 import re
-from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -18,6 +17,7 @@ from .models import (
 
 MIN_COOKING_TIME = 1
 MAX_COOKING_TIME = 32000
+
 
 class CustomUserCreateSerializer(UserCreateSerializer):
 
@@ -42,7 +42,7 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'email', 'is_subscribed']
         extra_kwargs = {
             'password': {'write_only': True},
-        } 
+        }
 
     def get_is_subscribed(self, author):
         user = self.context.get('request').user
@@ -52,7 +52,8 @@ class CustomUserSerializer(UserSerializer):
             return True
         else:
             return user.follow.filter(id=author.id).exists()
-    
+
+
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -79,7 +80,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'name', 'amount', 'measurement_unit')
-    
+  
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
 
@@ -90,7 +91,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         many=True, read_only=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    cooking_time = serializers.IntegerField(min_value=MIN_COOKING_TIME, max_value=MAX_COOKING_TIME)
+    cooking_time = serializers.IntegerField(min_value=MIN_COOKING_TIME,
+                                            max_value=MAX_COOKING_TIME)
 
     class Meta:
         model = Recipe
