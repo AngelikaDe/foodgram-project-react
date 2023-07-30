@@ -58,17 +58,17 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         user_to_manage = self.get_object()
         if current_user == user_to_manage:
             return Response({'detail': 'You cannot subscribe'
-                             'to yourself.'},
-                             status=status.HTTP_400_BAD_REQUEST)
+                            'to yourself.'},
+                            status=status.HTTP_400_BAD_REQUEST)
         if request.method == 'POST':
             follow, created = Follow.objects.get_or_create(user=user_to_manage,
                                                            author=current_user)
             if created:
                 return Response({'detail': 'Successfully subscribed'
-                                 'to the user.'},
-                                 status=status.HTTP_201_CREATED)
+                                'to the user.'},
+                                status=status.HTTP_201_CREATED)
             return Response({'detail': 'You are already subscribed'
-                             'to this user.'},status=status.HTTP_200_OK)
+                             'to this user.'}, status=status.HTTP_200_OK)
 
         follow = get_object_or_404(Follow, user=user_to_manage,
                                    author=current_user)
