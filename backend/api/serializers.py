@@ -80,7 +80,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'name', 'amount', 'measurement_unit')
-  
+
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
 
@@ -129,7 +129,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             image=validated_data['image'],
             cooking_time=validated_data['cooking_time'],
             text=validated_data['text']
-         )
+        )
         recipe_ingredients = [
             RecipeIngredient(
                 recipe=recipe,
