@@ -1,10 +1,19 @@
-from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
+
+from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .models import (Recipe, Tag, ShoppingCart, Ingredient,
-                     RecipeIngredient, FavoriteRecipe)
 from rest_framework.response import Response
 from rest_framework.decorators import action
+
+from .models import (
+    Recipe,
+    Tag,
+    ShoppingCart,
+    Ingredient,
+    FavoriteRecipe,
+    RecipeIngredient,
+)
+
 from .permissions import OnlyAuthorOrStaff
 from .serializers import (
     TagSerializer,
@@ -12,7 +21,9 @@ from .serializers import (
     IngredientSerializer,
     RecipeCreateSerializer,
     FavoriteRecipeSerializer,
-    RecipeSerializer)
+    RecipeSerializer,
+)
+
 from users.pagination import CustomUserPagination
 
 
@@ -25,15 +36,12 @@ class TagViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeCreateSerializer
-    permission_classes = (AllowAny,)
+    # permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     pagination = CustomUserPagination
 
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
-
-    def get_queryset(self):
-        queryset = Recipe.objects.all()
-        return queryset
 
     @action(detail=True,
             methods=['post',
@@ -74,8 +82,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             recipe = item.recipe
             file_content += f"Recipe: {recipe.name}\n"
 
-            ingredients = RecipeIngredient.objects.filter(
-                recipe=recipe)
+            ingredients = recipe.recipe_ingredients.all()
             for ingredient in ingredients:
                 amount = ingredient.amount
                 ingredient_name = ingredient.ingredient.name
