@@ -1,4 +1,4 @@
-name: Main foodgram Workflow
+name: Main Foodgram Workflow
 # Перечень событий-триггеров, при которых должен запускаться workflow
 on:
   # Событие push возникает,
