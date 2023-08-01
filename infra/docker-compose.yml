@@ -8,8 +8,8 @@ volumes:
 
 services:
   db:
-    image: postgres:13.10
-    env_file: .env
+    image: postgres:13.0-alpine
+    env_file: ./.env
     volumes:
       - /var/lib/postgresql/data/
 
