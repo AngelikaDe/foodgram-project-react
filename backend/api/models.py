@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 from users.models import CustomUser
 
 
@@ -21,7 +22,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=255, db_index=True,
                             verbose_name='Название')
     measurement_unit = models.CharField(max_length=10, default='g',
-                                        verbose_name='Единица измерения')
+                                        verbose_name='Единицы измерения')
 
     class Meta:
         ordering = ('name',)
@@ -36,7 +37,8 @@ class Recipe(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
                                verbose_name='Автор', related_name='recipes')
     name = models.CharField(max_length=255, verbose_name='Название')
-    image = models.ImageField(upload_to='recipes/', verbose_name='Изображение')
+    image = models.ImageField(upload_to='recipes/images/',
+                              verbose_name='Изображение')
     text = models.TextField(blank=True, verbose_name='Описание')
     ingredients = models.ManyToManyField(Ingredient,
                                          through='RecipeIngredient',
@@ -69,10 +71,12 @@ class RecipeIngredient(models.Model):
         ordering = ('-id', )
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
-
-    def __str__(self):
-        return (f'{self.amount} {self.ingredient.measurement_unit}'
-                'of {self.ingredient.name} in {self.recipe.name}')
+        constraints = [
+            UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='recipe_ingredient_unique'
+            )
+        ]
 
 
 class ShoppingCart(models.Model):
@@ -83,11 +87,12 @@ class ShoppingCart(models.Model):
                                default=None, verbose_name='Рецепт')
 
     class Meta:
-        verbose_name = 'Корзина'
-        verbose_name_plural = 'Корзина'
-
-    def __str__(self):
-        return f'{self.user}, {self.recipe}'
+        constraints = [
+            UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='user_shoppingcart_unique'
+            )
+        ]
 
 
 class FavoriteRecipe(models.Model):
@@ -100,6 +105,9 @@ class FavoriteRecipe(models.Model):
     class Meta:
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
-
-    def __str__(self):
-        return f'{self.recipe}, {self.user}'
+        constraints = [
+            UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='user_favorite_unique'
+            )
+        ]

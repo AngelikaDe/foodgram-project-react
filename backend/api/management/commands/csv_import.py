@@ -29,4 +29,4 @@ class Command(BaseCommand):
         except FileNotFoundError:
             self.stdout.write(
                 self.style.ERROR('Ошибка'))
-            raise CommandError(f'Отсутствует файл')
+            raise CommandError('Отсутствует файл')
