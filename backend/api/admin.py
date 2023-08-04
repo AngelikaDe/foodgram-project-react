@@ -8,11 +8,6 @@ class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
 
 
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'recipe']
-    search_fields = ['user__username', 'user__email']
-
-
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'total_favorites')
     list_filter = ('name', 'author', 'tags')
