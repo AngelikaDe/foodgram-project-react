@@ -48,10 +48,9 @@ class CustomUserSerializer(UserSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        elif user == author:
+        if user == author:
             return True
-        else:
-            return user.follow.filter(id=author.id).exists()
+        return user.follow.filter(id=author.id).exists()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -70,16 +69,20 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
 
-    id = serializers.ReadOnlyField(source='ingredient.id')
-    name = serializers.ReadOnlyField(source='ingredient.name')
-    amount = serializers.ReadOnlyField()
-    measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit'
-    )
+    id = serializers.IntegerField(source='ingredient.id')
+    amount = serializers.IntegerField(min_value=MIN_COOKING_TIME,
+                                      max_value=MAX_COOKING_TIME,
+                                      error_messages={
+                                          'min_value': ('Значение должно быть'
+                                                        'больше или равно'
+                                                        '{min_value}.'),
+                                          'max_value': ('Значение должно быть'
+                                                        'меньше или равно'
+                                                        '{max_value}.')})
 
     class Meta:
         model = RecipeIngredient
-        fields = ('id', 'name', 'amount', 'measurement_unit')
+        fields = ('id', 'amount')
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -88,11 +91,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     tags = TagSerializer(read_only=True, many=True)
     author = CustomUserSerializer(read_only=True)
     ingredients = RecipeIngredientSerializer(
-        many=True, read_only=True)
+        many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    cooking_time = serializers.IntegerField(min_value=MIN_COOKING_TIME,
-                                            max_value=MAX_COOKING_TIME)
 
     class Meta:
         model = Recipe
@@ -138,7 +139,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
             for ingredient in ingredients
         ]
-        print("Recipe Ingredients:", recipe_ingredients)
         RecipeIngredient.objects.bulk_create(recipe_ingredients)
         recipe.tags.add(*tags_data)
 
