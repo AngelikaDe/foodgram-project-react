@@ -11,14 +11,14 @@
 * Скопировать на сервер файлы docker-compose.yml, nginx.conf
 * Создать .env файл на сервере
   Например:
-  `
+  ```
 DB_ENGINE               # django.db.backends.postgresql
 DB_NAME                 # postgres
 POSTGRES_USER           # postgres
 POSTGRES_PASSWORD       # postgres
 DB_HOST                 # db
 DB_PORT                 # 5432 (порт по умолчанию)
-  `
+  ```
 * Чтобы запустить проект на серверее:
 ` sudo docker compose up -d `
 * Выполните миграции:
@@ -47,29 +47,35 @@ DB_PORT                 # 5432 (порт по умолчанию)
   Примеры:
   Регистрация пользователя:
   POST http://localhost/api/users/
-  ``` {
+  ```
+{
     "email": "newuser@yandex.ru",
     "username": "User1",
     "first_name": "Кирилл",
     "last_name": "Иванов",
     "password": "erutnfhv3455"
-} ```
+} 
+```
   Получение токена:
 POST http://localhost/api/auth/token/login/
-``` {
+```
+ {
     "password": "Qwerty777",
     "email": "abcde@yandex.ru"
- } ```
+ }
+ ```
   Авторизация:
   POST http://localhost/api/auth/token/login/
-  ``` {
+  ```
+ {
     "email": "newuser@yandex.ru",
     "password": "erutnfhv3455"
 }
 ```
 Создание рецепта:
 http://localhost/api/recipes
-``` {
+```
+{
   "ingredients": [
     {
       "id": 1,
@@ -83,7 +89,8 @@ http://localhost/api/recipes
   "name": "string",
   "text": "string",
   "cooking_time": 10
-} ```
+} 
+```
 
 ### Автор:
 api, деплой - Анжелика Демина
