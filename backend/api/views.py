@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -34,10 +35,14 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeCreateSerializer
-    # permission_classes = (AllowAny,)
     permission_classes = (IsAuthenticated,)
+    filter_backends = [DjangoFilterBackend, ]
     pagination = CustomUserPagination
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeSerializer
+        return RecipeCreateSerializer
 
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
@@ -75,7 +80,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             IsAuthenticated], url_path='download_shopping_cart')
     def download(self, request):
         shopping_cart = ShoppingCart.objects.filter(user=request.user)
-        file_content = 'Your shopping cart content:\n'
+        file_content = 'Cписок покупок:\n'
 
         for item in shopping_cart:
             recipe = item.recipe
@@ -87,7 +92,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ingredient_name = ingredient.ingredient.name
                 measurement_unit = ingredient.ingredient.measurement_unit
                 file_content += (
-                    f"{amount} {measurement_unit} {ingredient_name}\n")
+                    f"\n{ingredient_name} - "
+                    f"{amount} {measurement_unit}")
             file_content += "\n"
 
         response = Response(file_content, content_type='text/plain')

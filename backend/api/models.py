@@ -72,10 +72,7 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
                                    verbose_name='Ингредиент',
                                    related_name='recipe_ingredients')
-    amount = models.PositiveSmallIntegerField(
-        verbose_name='Количество',
-        validators=[MinValueValidator(MIN_COOKING_TIME),
-                    MaxValueValidator(MAX_COOKING_TIME)])
+    amount = models.PositiveSmallIntegerField()
 
     class Meta:
         ordering = ('-id', )
