@@ -1,7 +1,7 @@
 # Foodgram - Продуктовый помощник
 ## ip: 158.160.31.32 
 ## доменное имя: yafoodgram.hopto.org
-## логин суперюзера: root@yandex.ru, пароль: root
+## логин суперюзера: root@yandex.ru, пароль: 0000
 Социальная сеть для публикации, обмена рецептами, подписки на авторов. Есть возможность сформировать список покупок для выбранных рецептов.
 ## Запуск проекта
 ### Технологии:
@@ -11,14 +11,14 @@
 * Скопировать на сервер файлы docker-compose.yml, nginx.conf
 * Создать .env файл на сервере
   Например:
-  ```
-DB_ENGINE               # django.db.backends.postgresql
-DB_NAME                 # postgres
-POSTGRES_USER           # postgres
-POSTGRES_PASSWORD       # postgres
-DB_HOST                 # db
-DB_PORT                 # 5432 (порт по умолчанию)
-  ```
+```
+  DB_ENGINE               # django.db.backends.postgresql
+  DB_NAME                 # postgres
+  POSTGRES_USER           # postgres
+  POSTGRES_PASSWORD       # postgres
+  DB_HOST                 # db
+  DB_PORT                 # 5432 (порт по умолчанию)
+```
 * Чтобы запустить проект на серверее:
 ` sudo docker compose up -d `
 * Выполните миграции:
@@ -43,53 +43,53 @@ DB_PORT                 # 5432 (порт по умолчанию)
 `python manage.py migrate`
 * Запустить сервер
 `python manage.py runserver`
-* Можно делать запросы через постман`
-  Примеры:
+* Можно делать запросы через постман
+  #### Примеры:
   Регистрация пользователя:
   POST http://localhost/api/users/
-  ```
-{
-    "email": "newuser@yandex.ru",
-    "username": "User1",
-    "first_name": "Кирилл",
-    "last_name": "Иванов",
-    "password": "erutnfhv3455"
-} 
+```
+  {
+      "email": "newuser@yandex.ru",
+      "username": "User1",
+      "first_name": "Кирилл",
+      "last_name": "Иванов",
+      "password": "erutnfhv3455"
+  }
 ```
   Получение токена:
 POST http://localhost/api/auth/token/login/
 ```
- {
-    "password": "Qwerty777",
-    "email": "abcde@yandex.ru"
- }
+   {
+      "password": "Qwerty777",
+      "email": "abcde@yandex.ru"
+   }
  ```
   Авторизация:
   POST http://localhost/api/auth/token/login/
-  ```
- {
-    "email": "newuser@yandex.ru",
-    "password": "erutnfhv3455"
-}
+```
+   {
+      "email": "newuser@yandex.ru",
+      "password": "erutnfhv3455"
+  }
 ```
 Создание рецепта:
 http://localhost/api/recipes
 ```
-{
-  "ingredients": [
-    {
-      "id": 1,
-      "amount": 10
-    }
-  ],
-  "tags": [
-    1
-   ]
-  "image": "data:image",
-  "name": "string",
-  "text": "string",
-  "cooking_time": 10
-} 
+  {
+    "ingredients": [
+      {
+        "id": 1,
+        "amount": 10
+      }
+    ],
+    "tags": [
+      1
+     ]
+    "image": "data:image",
+    "name": "string",
+    "text": "string",
+    "cooking_time": 10
+  } 
 ```
 
 ### Автор:
